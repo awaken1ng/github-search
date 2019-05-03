@@ -12,6 +12,12 @@ export default {
     return new Promise((resolve, reject) => {
       fetch(url)
         .then((response) => {
+          if (response.status !== 200) {
+            response.json().then(json => console.error(json));
+            reject(Error('API did not respond with status code 200'));
+            return;
+          }
+
           // extract pagination links from headers
           let links = {};
           if (response.headers.has('Link')) {
