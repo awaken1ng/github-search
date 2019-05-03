@@ -13,7 +13,7 @@
       "autoFix": true
     }
   ],
-  "files.autoSave": "onFocusChange",
+  "files.autoSave": "off",
   "editor.formatOnSave": true,
   "editor.formatOnType": true,
   "eslint.autoFixOnSave": true,
