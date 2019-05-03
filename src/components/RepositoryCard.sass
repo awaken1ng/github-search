@@ -1,0 +1,35 @@
+$highlight: #ff6347
+
+a.repoCard-link:focus .repoCard
+  border-color: $highlight
+
+a.repoCard-link
+  &, &:link, &:visited, &:hover, &:active
+    color: unset
+    text-decoration: none
+    outline: 0
+    
+  .repoCard 
+    display: flex
+    flex-direction: column
+    border: 1px solid white
+    border-radius: 5px
+    &:hover
+      border-color: $highlight
+    margin: 0.5rem 0
+    padding: 0.5rem
+    width: 700px
+    .repoCard-info
+      display: flex
+      justify-content: space-between
+      text-align: left
+      .repoCard-fullname
+        .repoCard-divider
+          margin: 0 0.5rem
+        .repoCard-name
+          font-weight: bold
+    .repoCard-stats
+      display: flex
+      .repoCard-stat
+        display: flex
+        align-items: center
