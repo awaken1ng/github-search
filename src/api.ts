@@ -1,9 +1,22 @@
-import { GithubRepoSearchResponse, GithubRepoInfoPaginated } from './types';
+import {
+  GithubRepoSearchResponse, GithubRepoInfoPaginated,
+  GithubRateLimit, GithubApiRateLimitResponse,
+} from './types';
 
 // const root = 'https://api.github.com';
 const root = 'http://127.0.0.1:5000';
 
 export default {
+  searchRateLimit: (): Promise<GithubRateLimit> => {
+    const url = `${root}/rate_limit`;
+
+    return new Promise((resolve, reject) => {
+      fetch(url)
+        .then(response => response.json())
+        .then((json: GithubApiRateLimitResponse) => resolve(json.resources.search))
+        .catch(reason => reject(reason));
+    });
+  },
   searchRepositories: (
     query: string, queryPage: number, perQuery: number, reposPerPage: number,
   ): Promise<GithubRepoSearchResponse> => {

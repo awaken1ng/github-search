@@ -1,5 +1,6 @@
 import {
   Actions, ActionTypes, fetchDataFulfilled, fetchDataRejected,
+  queryRateLimitFulfilled, queryRateLimitRejected,
 } from '../actions';
 import store, { StoreState } from '../state-store';
 import api from '../api';
@@ -40,6 +41,18 @@ export default function githubSearchReducer(state: StoreState, action: ActionTyp
       const data = Object.assign({}, state.data);
       data.items = { ...state.data.items, ...action.data.items };
       return { ...state, data };
+    case Actions.QUERY_RATELIMIT:
+      api
+        .searchRateLimit()
+        .then(response => store.dispatch(queryRateLimitFulfilled(response)))
+        .catch(reason => store.dispatch(queryRateLimitRejected(reason)));
+      return state;
+    case Actions.QUERY_RATELIMIT_REJECTED:
+      console.error('QUERY_RATELIMIT_REJECTED', action.reason);
+      return state;
+    case Actions.QUERY_RATELIMIT_FULFILLED:
+    case Actions.UPDATE_RATELIMIT:
+      return { ...state, ratelimit: action.data };
     default:
       return state;
   }

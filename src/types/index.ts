@@ -100,6 +100,22 @@ export interface GithubRepoInfo {
   score: number;
 }
 
+export interface GithubRateLimit {
+  limit: number;
+  remaining: number;
+  reset: number;
+}
+
+export interface GithubApiRateLimitResponse {
+  resources: {
+    core: GithubRateLimit;
+    search: GithubRateLimit;
+    graphql: GithubRateLimit;
+    integration_manifest: GithubRateLimit;
+  };
+  rate: GithubRateLimit;
+}
+
 export interface GithubApiRepoSearchResponse {
   total_count: number;
   incomplete_results: boolean;

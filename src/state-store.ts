@@ -1,6 +1,6 @@
 import { createStore } from 'redux';
 import githubSearchReducer from './reducers';
-import { GithubRepoSearchResponse } from './types';
+import { GithubRepoSearchResponse, GithubRateLimit } from './types';
 
 export interface StoreState {
   query: string | undefined;
@@ -9,6 +9,7 @@ export interface StoreState {
   data: GithubRepoSearchResponse | undefined;
   reposPerPage: number;
   reposPerQuery: number;
+  ratelimit: GithubRateLimit;
 }
 
 const initialState: StoreState = {
@@ -18,6 +19,11 @@ const initialState: StoreState = {
   data: undefined,
   reposPerPage: 10,
   reposPerQuery: 30,
+  ratelimit: {
+    limit: 0,
+    remaining: 0,
+    reset: 0,
+  },
 };
 
 const store = createStore(githubSearchReducer, initialState);
