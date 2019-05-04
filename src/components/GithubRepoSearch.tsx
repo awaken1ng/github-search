@@ -44,7 +44,7 @@ export class GithubRepoSearch extends React.Component<Props, object> {
   }
 
   fetch(target: HTMLInputElement) {
-    const { value } = target;
+    const value = target.value.trim();
     if (!value) return;
 
     const { queryMinLength } = this.props;
