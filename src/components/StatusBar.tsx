@@ -15,10 +15,11 @@ interface Props {
   debounceDelay: number;
   queryMinLength: number;
   isLoading: boolean;
+  searchAsYouType: boolean;
 }
 
 export class StatusBar extends React.Component<Props, object> {
-  onDebounceToggle = (event: React.MouseEvent<HTMLInputElement>) => {
+  onDebounceToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target as HTMLInputElement;
 
     if (target.checked) store.dispatch(debounceActions.enable());
@@ -27,7 +28,7 @@ export class StatusBar extends React.Component<Props, object> {
 
   render() {
     const {
-      ratelimit, debounceDelay, queryMinLength, isLoading,
+      ratelimit, debounceDelay, queryMinLength, isLoading, searchAsYouType,
     } = this.props;
 
     return (
@@ -43,7 +44,12 @@ export class StatusBar extends React.Component<Props, object> {
           <span>{isLoading ? <Autorenew /> : <Done />}</span>
           <span>
             <label htmlFor="debounceToggle">
-              <input type="checkbox" id="debounceToggle" onClick={this.onDebounceToggle} />
+              <input
+                type="checkbox"
+                id="debounceToggle"
+                checked={searchAsYouType}
+                onChange={this.onDebounceToggle}
+              />
               Search-as-you-type
             </label>
           </span>
@@ -60,6 +66,7 @@ function mapStateToProps(state: StoreState) {
   return {
     ratelimit: state.ratelimit,
     isLoading: state.github.isLoading,
+    searchAsYouType: state.searchAsYouType,
   };
 }
 
