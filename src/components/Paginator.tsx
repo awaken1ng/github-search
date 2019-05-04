@@ -3,7 +3,7 @@ import { ArrowForward, ArrowBack } from '@material-ui/icons';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import * as githubActions from '../actions/github';
-import { nextPage, prevPage } from '../actions/paginator';
+import * as paginatorActions from '../actions/paginator';
 import stateStore, { StoreState, RootAction } from '../state-store';
 
 interface Props {
@@ -42,18 +42,17 @@ function mapDispatchToProps(dispatch: Dispatch<RootAction>) {
     toNextPage: () => {
       const { paginator, github } = stateStore.getState();
       const {
-        query, reposPerQuery, data,
+        query, reposPerQuery, reposPerPage, data,
       } = github;
 
       if (!((paginator.current + 1) in data.items)) {
-        const nextQueryPage = 2;
-
-        dispatch(githubActions.fetchData(query, nextQueryPage, reposPerQuery));
+        const currentQueryPage = Math.max(1, paginator.current / (reposPerQuery / reposPerPage));
+        dispatch(githubActions.fetchData(query, currentQueryPage + 1, reposPerQuery));
       }
 
-      dispatch(nextPage());
+      dispatch(paginatorActions.nextPage());
     },
-    toPrevPage: () => dispatch(prevPage()),
+    toPrevPage: () => dispatch(paginatorActions.prevPage()),
   };
 }
 
