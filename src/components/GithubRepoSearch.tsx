@@ -20,6 +20,7 @@ interface Props {
   perPage: number;
   perQuery: number;
   ratelimit: GithubRateLimit;
+  searchAsYouType: boolean;
 }
 
 export class GithubRepoSearch extends React.Component<Props, object> {
@@ -37,6 +38,8 @@ export class GithubRepoSearch extends React.Component<Props, object> {
   }
 
   onDebounce = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const { searchAsYouType } = this.props;
+    if (!searchAsYouType) return;
     this.fetch(event.target as HTMLInputElement);
   }
 
@@ -56,20 +59,21 @@ export class GithubRepoSearch extends React.Component<Props, object> {
 
   render() {
     const {
-      placeholder, currentPage, data,
+      placeholder, currentPage, data, queryMinLength,
     } = this.props;
+    const debounceDelay = 750;
 
     return (
       <div className="githubRepoSearch">
         <DebouncedInput
           onKeyUp={this.onInputKeyUp}
           onDebounce={this.onDebounce}
-          delay={750}
+          delay={debounceDelay}
           type="text"
           placeholder={placeholder}
         />
 
-        <StatusBar />
+        <StatusBar debounceDelay={debounceDelay} queryMinLength={queryMinLength} />
         <Paginator />
 
         <div className="githubRepoSearch-Items">
@@ -104,6 +108,7 @@ function mapStateToProps(state: StoreState) {
     perPage: state.github.reposPerPage,
     perQuery: state.github.reposPerQuery,
     data: state.github.data,
+    searchAsYouType: state.searchAsYouType,
   };
 }
 

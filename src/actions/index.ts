@@ -1,9 +1,11 @@
-import * as paginatorActions from './paginator';
-import * as ratelimitActions from './ratelimit';
-import * as githubActions from './github';
+import * as paginator from './paginator';
+import * as ratelimit from './ratelimit';
+import * as github from './github';
+import * as searchAsYouType from './searchAsYouType';
 
 export default {
-  pagination: paginatorActions,
-  ratelimit: ratelimitActions,
-  github: githubActions,
+  paginator,
+  ratelimit,
+  github,
+  searchAsYouType,
 };
