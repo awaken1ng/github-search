@@ -1,30 +1,27 @@
-import { createStore } from 'redux';
-import githubSearchReducer from './reducers';
-import { GithubRepoSearchResponse, GithubRateLimit } from './types';
+import { createStore, combineReducers } from 'redux';
+import { ActionType } from 'typesafe-actions';
+import paginatorReducer, { PaginatorState, paginatorInitialState } from './reducers/paginator';
+import ratelimitReducer, { RatelimitState, ratelimitInitialState } from './reducers/ratelimit';
+import githubSearchReducer, { GithubSearchState, githubSearchInitialState } from './reducers/github';
+
+export type RootAction = ActionType<typeof import('./actions')>;
 
 export interface StoreState {
-  query: string | undefined;
-  currentPage: number; // currently shown page
-  pagesTotal: number; // total number of pages
-  data: GithubRepoSearchResponse | undefined;
-  reposPerPage: number;
-  reposPerQuery: number;
-  ratelimit: GithubRateLimit;
+  paginator: PaginatorState;
+  ratelimit: RatelimitState;
+  github: GithubSearchState;
 }
 
 const initialState: StoreState = {
-  query: undefined,
-  currentPage: 1,
-  pagesTotal: 0,
-  data: undefined,
-  reposPerPage: 10,
-  reposPerQuery: 30,
-  ratelimit: {
-    limit: 0,
-    remaining: 0,
-    reset: 0,
-  },
+  paginator: paginatorInitialState,
+  ratelimit: ratelimitInitialState,
+  github: githubSearchInitialState,
 };
 
-const store = createStore(githubSearchReducer, initialState);
+const store = createStore(combineReducers({
+  paginator: paginatorReducer,
+  ratelimit: ratelimitReducer,
+  github: githubSearchReducer,
+}), initialState);
+
 export default store;

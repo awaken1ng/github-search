@@ -17,6 +17,7 @@
     "react-scripts": "3.0.0",
     "redux": "^4.0.1",
     "throttle-debounce": "^2.1.0",
+    "typesafe-actions": "^4.2.0",
     "typescript": "3.4.5"
   },
   "scripts": {

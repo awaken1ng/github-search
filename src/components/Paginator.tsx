@@ -2,10 +2,9 @@ import * as React from 'react';
 import { ArrowForward, ArrowBack } from '@material-ui/icons';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import {
-  ActionTypes, nextPage, prevPage, fetchData,
-} from '../actions';
-import stateStore, { StoreState } from '../state-store';
+import * as githubActions from '../actions/github';
+import { nextPage, prevPage } from '../actions/paginator';
+import stateStore, { StoreState, RootAction } from '../state-store';
 
 interface Props {
   // connected from state
@@ -32,24 +31,26 @@ export function Paginator({
 
 function mapStateToProps(state: StoreState) {
   return {
-    current: state.currentPage,
-    total: state.pagesTotal,
-    perPage: state.reposPerPage,
+    current: state.paginator.current,
+    total: state.paginator.total,
+    perPage: state.github.reposPerPage,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<ActionTypes>) {
+function mapDispatchToProps(dispatch: Dispatch<RootAction>) {
   return {
     toNextPage: () => {
+      const { paginator, github } = stateStore.getState();
       const {
-        currentPage, query, reposPerQuery, data,
-      } = stateStore.getState();
+        query, reposPerQuery, data,
+      } = github;
 
-      if (!((currentPage + 1) in data.items)) {
+      if (!((paginator.current + 1) in data.items)) {
         const nextQueryPage = 2;
 
-        dispatch(fetchData(query, nextQueryPage, reposPerQuery));
+        dispatch(githubActions.fetchData(query, nextQueryPage, reposPerQuery));
       }
+
       dispatch(nextPage());
     },
     toPrevPage: () => dispatch(prevPage()),

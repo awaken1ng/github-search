@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import RepositoryCard from './RepositoryCard';
 import Paginator from './Paginator';
 import DebouncedInput from './DebouncedInput';
-import { fetchData } from '../actions';
-import { GithubRepoSearchResponse } from '../types';
+import * as githubActions from '../actions/github';
+import * as ratelimitActions from '../actions/ratelimit';
+import { GithubRepoSearchResponse, GithubRateLimit } from '../types';
 import store, { StoreState } from '../state-store';
 import './GithubRepoSearch.sass';
 
@@ -17,9 +18,14 @@ interface Props {
   pagesTotal: number;
   perPage: number;
   perQuery: number;
+  ratelimit: GithubRateLimit;
 }
 
 export class GithubRepoSearch extends React.Component<Props, object> {
+  constructor(props: Props) {
+    super(props);
+    store.dispatch(ratelimitActions.get());
+  }
   onInputKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     const { key } = event;
     if (key === 'Tab') return; // can be fired off when alt tabbing;
@@ -40,16 +46,16 @@ export class GithubRepoSearch extends React.Component<Props, object> {
     const { queryMinLength } = this.props;
     if (value.length < queryMinLength) return;
 
-    const { data } = store.getState();
+    const { data } = store.getState().github;
     if (data && data.query === value) return;
 
     const { perQuery } = this.props;
-    store.dispatch(fetchData(value, 1, perQuery));
+    store.dispatch(githubActions.fetchData(value, 1, perQuery));
   }
 
   render() {
     const {
-      placeholder, currentPage, data,
+      placeholder, currentPage, data, ratelimit,
     } = this.props;
 
     return (
@@ -61,6 +67,10 @@ export class GithubRepoSearch extends React.Component<Props, object> {
           type="text"
           placeholder={placeholder}
         />
+
+        <div className="githubRepoSearch-status">
+          Rate Limit: {ratelimit.remaining}/{ratelimit.limit}
+        </div>
 
         <Paginator />
 
@@ -90,11 +100,12 @@ export class GithubRepoSearch extends React.Component<Props, object> {
 
 function mapStateToProps(state: StoreState) {
   return {
-    currentPage: state.currentPage,
-    pagesTotal: state.pagesTotal,
-    perPage: state.reposPerPage,
-    perQuery: state.reposPerQuery,
-    data: state.data,
+    currentPage: state.paginator.current,
+    pagesTotal: state.paginator.total,
+    ratelimit: state.ratelimit,
+    perPage: state.github.reposPerPage,
+    perQuery: state.github.reposPerQuery,
+    data: state.github.data,
   };
 }
 
