@@ -36,8 +36,8 @@ export class StatusBar extends React.Component<Props, object> {
           <span>Minimal query length: {queryMinLength}</span>
         </span>
         <span className="statusBar-column">
-          <span>Rate Limit: {ratelimit.remaining}/{ratelimit.limit}</span>
-          <span>Next Reset: {moment.utc(ratelimit.reset * 1000).fromNow()}</span>
+          <span>Rate limit: {ratelimit.remaining}/{ratelimit.limit}</span>
+          <span>Next reset: {moment.utc(ratelimit.reset * 1000).fromNow()}</span>
         </span>
         <span className="statusBar-column">
           <span>{isLoading ? <Autorenew /> : <Done />}</span>
