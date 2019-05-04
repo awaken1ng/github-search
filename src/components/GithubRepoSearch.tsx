@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import RepositoryCard from './RepositoryCard';
 import Paginator from './Paginator';
 import DebouncedInput from './DebouncedInput';
+import StatusBar from './StatusBar';
 import * as githubActions from '../actions/github';
 import * as ratelimitActions from '../actions/ratelimit';
 import { GithubRepoSearchResponse, GithubRateLimit } from '../types';
@@ -55,7 +56,7 @@ export class GithubRepoSearch extends React.Component<Props, object> {
 
   render() {
     const {
-      placeholder, currentPage, data, ratelimit,
+      placeholder, currentPage, data,
     } = this.props;
 
     return (
@@ -68,10 +69,7 @@ export class GithubRepoSearch extends React.Component<Props, object> {
           placeholder={placeholder}
         />
 
-        <div className="githubRepoSearch-status">
-          Rate Limit: {ratelimit.remaining}/{ratelimit.limit}
-        </div>
-
+        <StatusBar />
         <Paginator />
 
         <div className="githubRepoSearch-Items">
