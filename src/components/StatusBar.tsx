@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { Autorenew, Done } from '@material-ui/icons';
 import moment from 'moment';
 import * as debounceActions from '../actions/searchAsYouType';
 import store, { StoreState } from '../state-store';
@@ -13,6 +14,7 @@ interface Props {
   };
   debounceDelay: number;
   queryMinLength: number;
+  isLoading: boolean;
 }
 
 export class StatusBar extends React.Component<Props, object> {
@@ -25,7 +27,7 @@ export class StatusBar extends React.Component<Props, object> {
 
   render() {
     const {
-      ratelimit, debounceDelay, queryMinLength,
+      ratelimit, debounceDelay, queryMinLength, isLoading,
     } = this.props;
 
     return (
@@ -38,6 +40,7 @@ export class StatusBar extends React.Component<Props, object> {
           <span>Next Reset: {moment.utc(ratelimit.reset * 1000).fromNow()}</span>
         </span>
         <span className="statusBar-column">
+          <span>{isLoading ? <Autorenew /> : <Done />}</span>
           <span>
             <label htmlFor="debounceToggle">
               <input type="checkbox" id="debounceToggle" onClick={this.onDebounceToggle} />
@@ -54,7 +57,10 @@ export class StatusBar extends React.Component<Props, object> {
 
 
 function mapStateToProps(state: StoreState) {
-  return { ratelimit: state.ratelimit };
+  return {
+    ratelimit: state.ratelimit,
+    isLoading: state.github.isLoading,
+  };
 }
 
 export default connect(mapStateToProps)(StatusBar);

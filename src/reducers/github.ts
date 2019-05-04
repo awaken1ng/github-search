@@ -11,6 +11,7 @@ export type GithubActions = ActionType<typeof github>
 export interface GithubSearchState {
   query: string | undefined;
   data: GithubRepoSearchResponse | undefined;
+  isLoading: boolean;
   reposPerPage: number;
   reposPerQuery: number;
 }
@@ -18,6 +19,7 @@ export interface GithubSearchState {
 export const githubSearchInitialState: GithubSearchState = {
   query: undefined,
   data: undefined,
+  isLoading: false,
   reposPerPage: 10,
   reposPerQuery: 30,
 };
@@ -39,16 +41,18 @@ export default function githubSearchReducer(
           store.dispatch(ratelimit.update(response.ratelimit));
         })
         .catch(reason => store.dispatch(github.fetchDataRejected(reason)));
-      return { ...state, query };
+      return { ...state, query, isLoading: true };
     case github.Action.FETCH_DATA_REJECTED:
       console.error('FETCH_DATA_REJECTED', action.payload);
-      return state;
+      return { ...state, isLoading: false };
     case github.Action.FETCH_DATA_FULFILLED:
     case github.Action.UPDATE_DATA:
+      const ret = { ...state, isLoading: false };
+
       // if there is currently no data in the store
       // or if it's a different query, replace it
       if (!state.data || state.data.query !== action.payload.query) {
-        return { ...state, data: action.payload };
+        return { ...ret, data: action.payload };
       }
 
       // otherwise update the items
@@ -59,7 +63,7 @@ export default function githubSearchReducer(
       // update items there and update state
       const data = Object.assign({}, state.data);
       data.items = { ...state.data.items, ...action.payload.items };
-      return { ...state, data };
+      return { ...ret, data };
     default:
       return state;
   }
