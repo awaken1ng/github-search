@@ -45,6 +45,9 @@ function mapDispatchToProps(dispatch: Dispatch<RootAction>) {
         query, reposPerQuery, reposPerPage, data,
       } = github;
 
+      // if on last page, return
+      if (paginator.current >= paginator.total) return;
+
       if (!((paginator.current + 1) in data.items)) {
         const currentQueryPage = Math.max(1, paginator.current / (reposPerQuery / reposPerPage));
         dispatch(githubActions.fetchData(query, currentQueryPage + 1, reposPerQuery));
