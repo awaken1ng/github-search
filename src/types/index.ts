@@ -136,5 +136,6 @@ export interface GithubRepoSearchResponse {
     next?: string;
     prev?: string;
   };
+  ratelimit: GithubRateLimit;
   items: GithubRepoInfoPaginated;
 }

@@ -45,7 +45,14 @@ export default {
                 {},
               ); // format from [[url, rel]] to {rel: url}
           }
-          // inject them into response
+
+          // extract ratelimit status from headers
+          const ratelimit = {
+            remaining: response.headers.get('X-RateLimit-Remaining'),
+            limit: response.headers.get('X-RateLimit-Limit'),
+            reset: response.headers.get('X-RateLimit-Reset'),
+          };
+
           response.json().then((json) => {
             // sort items into pages
             const paginated: GithubRepoInfoPaginated = {};
@@ -58,7 +65,10 @@ export default {
               paginated[page] = json.items.slice(start, end);
             }
             json.items = paginated;
-            resolve({ ...json, query, links });
+
+            resolve({
+              ...json, query, links, ratelimit,
+            });
           });
         })
         .catch(reason => reject(reason));

@@ -2,6 +2,7 @@ import { ActionType } from 'typesafe-actions';
 import { GithubRepoSearchResponse } from '../types';
 import * as github from '../actions/github';
 import * as paginator from '../actions/paginator';
+import * as ratelimit from '../actions/ratelimit';
 import store from '../state-store';
 import api from '../api';
 
@@ -34,6 +35,8 @@ export default function githubSearchReducer(
           // update paginator total page count
           const total = Math.ceil(response.total_count / state.reposPerPage);
           store.dispatch(paginator.setTotal(total));
+          // update ratelimit status
+          store.dispatch(ratelimit.update(response.ratelimit));
         })
         .catch(reason => store.dispatch(github.fetchDataRejected(reason)));
       return { ...state, query };

@@ -10,13 +10,13 @@ export type RatelimitActions = ActionType<typeof ratelimit>
 export interface RatelimitState extends GithubRateLimit { }
 
 export const ratelimitInitialState: RatelimitState = {
-  limit: 0,
   remaining: 0,
+  limit: 0,
   reset: 0,
 };
 
 export default function ratelimitReducer(
-  state: RatelimitState = { limit: 0, remaining: 0, reset: 0 }, action: RatelimitActions,
+  state: RatelimitState = { remaining: 0, limit: 0, reset: 0 }, action: RatelimitActions,
 ): RatelimitState {
   switch (action.type) {
     case ratelimit.Action.GET:
