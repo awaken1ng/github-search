@@ -3,8 +3,7 @@ import {
   GithubRateLimit, GithubApiRateLimitResponse,
 } from './types';
 
-// const root = 'https://api.github.com';
-const root = 'http://127.0.0.1:5000';
+const root = 'https://api.github.com';
 
 export default {
   searchRateLimit: (): Promise<GithubRateLimit> => {
