@@ -66,11 +66,13 @@ export class StatusBar extends React.Component<Props, object> {
         </span>
         <span className="statusBar-column">
           <span>Rate limit: {ratelimit.remaining}/{ratelimit.limit}</span>
-          <Countdown
-            key={ratelimit.reset}
-            date={ratelimit.reset * 1000}
-            renderer={countdownRenderer}
-          />
+          {ratelimit.reset &&
+            <Countdown
+              key={ratelimit.reset}
+              date={ratelimit.reset * 1000}
+              renderer={countdownRenderer}
+            />
+          }
         </span>
         <span className="statusBar-column">
           <span>{isLoading ? <Autorenew /> : <Done />}</span>
